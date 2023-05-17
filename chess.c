@@ -250,7 +250,13 @@ int move_possible(struct game *game, int turn, struct position start_position, s
   }else if(piece.type == BISHOP){
     return bishop_move_possible(game, turn, start_position, end_position);
   }else if(piece.type == KNIGHT){
-    return 0;
+    int i_diff = end_position.i - start_position.i; 
+    int j_diff = end_position.j - start_position.j;
+    if(i_diff == 1 || i_diff == -1 || i_diff == 2 || i_diff == -2)
+      if(j_diff == 1 || j_diff == -1 || j_diff == 2 || j_diff == -2)
+        if(i_diff != j_diff && i_diff != j_diff * 1)
+          return 0;
+    return 1;
   }else if(piece.type == QUEEN){
     int bp = bishop_move_possible(game, turn, start_position, end_position);
     int rp = rock_move_possible(game, turn, start_position, end_position);
