@@ -122,8 +122,9 @@ void init_game(struct game *game, int time){
 }
 
 void print_game(struct game game, int turn){
-  if(turn == WHITE)
+  if(turn == WHITE){
     for(int j = 7; j >= 0; j--){
+      printf("%d| ", j+1);
       for(int i = 0; i < 8; i++){
         int index = j*8 + i;
         if(game.board[index].empty)
@@ -133,9 +134,13 @@ void print_game(struct game game, int turn){
       }
       printf("\n");
     }
-  else
+    printf("  ");
+    for(int i = 0; i < 8; i++)
+      printf("  %c ", i+65);
+  }else{
     for(int j = 0; j < 8; j++){
-      for(int i = 0; i < 8; i++){
+      printf("%d| ", j+1);
+      for(int i = 7; i >= 0; i--){
         int index = j*8 + i;
         if(game.board[index].empty)
           printf(" .. ");
@@ -144,6 +149,10 @@ void print_game(struct game game, int turn){
       }
       printf("\n");
     }
+    printf("  ");
+    for(int i = 7; i >= 0; i--)
+      printf("  %c ", i+65);
+  }
 }
 
 int bishop_move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
@@ -298,13 +307,17 @@ bool ckeck_is_black_in_check(struct game *game){
 }
 
 int make_move(struct game *game, int turn, struct position start_position, struct position end_position){
-  if(move_possible(game, turn, start_position, end_position) == 0){
+  if(move_possible(game, game->move, start_position, end_position) == 0){
     int start_index = start_position.j * 8 + start_position.i;
     int end_index = end_position.j * 8 + end_position.i;
     game->board[end_index].empty = false;
     game->board[end_index].piece = game->board[start_index].piece;
     game->board[start_index].empty = true;
     game->board[start_index].piece.type = NON;
+    if(game->move == WHITE)
+      game->move = BLACK;
+    else
+     game->move = WHITE;
     return 0;
   }
   return 1;
