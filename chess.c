@@ -1,53 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "chess.h"
 #include <stdbool.h>
+#include <stdio.h>
 
-/*
- * color: black -> 0, white -> 1
- * type:
- * king -> 0
- * pawn -> 1
- * knight -> 2
- * bishop -> 3
- * rock -> 4
- * queen -> 5
- * */
-struct piece{
-  int value;
-  int type;
-  int color;
-};
-
-struct square{
-  int i;
-  int j;
-  struct piece piece;
-  bool empty;
-};
-
-/*
- * move: black -> 0, white -> 1
- * board index starts from bottom left corner
- * index increase ny going right in each row then going to the upper row
- * */
-struct game{
-  struct square board[64];
-  int white_score;
-  int black_score;
-  int move;
-  bool is_white_check;
-  bool is_black_check;
-  int white_time;
-  int black_time;
-};
-
-void init_game(struct game* game, int time){
+void init_game(struct game *game, int time){
   // setting game status
   game->black_time = time;
   game->white_time = time;
   game->black_score = 0;
   game->white_score = 0;
-  game->move = 1;
+  game->move = WHITE;
   game->is_black_check = false;
   game->is_white_check = false;
 
@@ -56,99 +17,119 @@ void init_game(struct game* game, int time){
     game->board[i].i = i % 8;
     game->board[i].j = i / 8;
     game->board[i].empty = true;
-    game->board[i].piece.color = -1;
-    game->board[i].piece.type= -1;
-    game->board[i].piece.value = -1;
+    game->board[i].piece.color = NON;
+    game->board[i].piece.type= NON;
+    game->board[i].piece.value = NON;
   }
 
   // putting pieces in place
   for(int i = 0; i < 8; i++){
     // setting white pawns
-    game->board[i+8].piece.color = 1;
-    game->board[i+8].piece.type= 1;
-    game->board[i+8].piece.value = 1;
+    game->board[i+8].piece.color = WHITE;
+    game->board[i+8].piece.type= PAWN;
+    game->board[i+8].piece.value = PAWN_VALUE;
+    game->board[i+8].empty = false;
     // setting black pawns
-    game->board[i+48].piece.color = 0;
-    game->board[i+48].piece.type= 1;
-    game->board[i+48].piece.value = 1;
+    game->board[i+48].piece.color = BLACK;
+    game->board[i+48].piece.type= PAWN;
+    game->board[i+48].piece.value = PAWN_VALUE;
+    game->board[i+48].empty = false;
   }
 
   // setting white queen
-  game->board[3].piece.color = 1;
-  game->board[3].piece.type= 5;
-  game->board[3].piece.value = 9;
+  game->board[3].piece.color = WHITE;
+  game->board[3].piece.type= QUEEN;
+  game->board[3].piece.value = QUEEN_VALUE;
+  game->board[3].empty = false;
 
   // setting white king
-  game->board[4].piece.color = 1;
-  game->board[4].piece.type= 0;
-  game->board[4].piece.value = 0;
+  game->board[4].piece.color = WHITE;
+  game->board[4].piece.type= KING;
+  game->board[4].piece.value = KING_VALUE;
+  game->board[4].empty = false;
 
   // setting black queen
-  game->board[59].piece.color = 0;
-  game->board[59].piece.type= 5;
-  game->board[59].piece.value = 9;
+  game->board[59].piece.color = BLACK;
+  game->board[59].piece.type= QUEEN;
+  game->board[59].piece.value = QUEEN_VALUE;
+  game->board[59].empty = false;
 
   // setting black king
-  game->board[60].piece.color = 0;
-  game->board[60].piece.type= 0;
-  game->board[60].piece.value = 0;
+  game->board[60].piece.color = BLACK;
+  game->board[60].piece.type= KING;
+  game->board[60].piece.value = KING_VALUE;
+  game->board[60].empty = false;
 
   //setting white rocks
-  game->board[0].piece.color = 1;
-  game->board[0].piece.type= 4;
-  game->board[0].piece.value = 5;
-  game->board[7].piece.color = 1;
-  game->board[7].piece.type= 4;
-  game->board[7].piece.value = 5;
+  game->board[0].piece.color = WHITE;
+  game->board[0].piece.type= ROCK;
+  game->board[0].piece.value = ROCK_VALUE;
+  game->board[0].empty = false;
+  game->board[7].piece.color = WHITE;
+  game->board[7].piece.type= ROCK;
+  game->board[7].piece.value = ROCK_VALUE;
+  game->board[7].empty = false;
 
   //setting black rocks
-  game->board[56].piece.color = 0;
-  game->board[56].piece.type= 4;
-  game->board[56].piece.value = 5;
-  game->board[63].piece.color = 0;
-  game->board[63].piece.type= 4;
-  game->board[63].piece.value = 5;
+  game->board[56].piece.color = BLACK;
+  game->board[56].piece.type= ROCK;
+  game->board[56].piece.value = ROCK_VALUE;
+  game->board[56].empty = false;
+  game->board[63].piece.color = BLACK;
+  game->board[63].piece.type= ROCK;
+  game->board[63].piece.value = ROCK_VALUE;
+  game->board[63].empty = false;
 
   //setting white knights
-  game->board[1].piece.color = 1;
-  game->board[1].piece.type= 2;
-  game->board[1].piece.value = 3;
-  game->board[6].piece.color = 1;
-  game->board[6].piece.type= 2;
-  game->board[6].piece.value = 3;
+  game->board[1].piece.color = WHITE;
+  game->board[1].piece.type= KNIGHT;
+  game->board[1].piece.value = KNIGHT_VALUE;
+  game->board[1].empty = false;
+  game->board[6].piece.color = WHITE;
+  game->board[6].piece.type= KNIGHT;
+  game->board[6].piece.value = KNIGHT_VALUE;
+  game->board[6].empty = false;
 
   //setting black knights
-  game->board[57].piece.color = 0;
-  game->board[57].piece.type= 2;
-  game->board[57].piece.value = 3;
-  game->board[62].piece.color = 0;
-  game->board[62].piece.type= 2;
-  game->board[62].piece.value = 3;
+  game->board[57].piece.color = BLACK;
+  game->board[57].piece.type= KNIGHT;
+  game->board[57].piece.value = KNIGHT_VALUE;
+  game->board[57].empty = false;
+  game->board[62].piece.color = BLACK;
+  game->board[62].piece.type= KNIGHT;
+  game->board[62].piece.value = KNIGHT_VALUE;
+  game->board[62].empty = false;
 
   //setting white bishops
-  game->board[2].piece.color = 1;
-  game->board[2].piece.type= 3;
-  game->board[2].piece.value = 3;
-  game->board[5].piece.color = 1;
-  game->board[5].piece.type= 3;
-  game->board[5].piece.value = 3;
+  game->board[2].piece.color = WHITE;
+  game->board[2].piece.type= BISHOP;
+  game->board[2].piece.value = BISHOP_VALUE;
+  game->board[2].empty = false;
+  game->board[5].piece.color = WHITE;
+  game->board[5].piece.type= BISHOP;
+  game->board[5].piece.value = BISHOP_VALUE;
+  game->board[5].empty = false;
 
   //setting black bishops
-  game->board[58].piece.color = 0;
-  game->board[58].piece.type= 3;
-  game->board[58].piece.value = 3;
-  game->board[61].piece.color = 0;
-  game->board[61].piece.type= 3;
-  game->board[61].piece.value = 3;
+  game->board[58].piece.color = BLACK;
+  game->board[58].piece.type= BISHOP;
+  game->board[58].piece.value = BISHOP_VALUE;
+  game->board[58].empty = false;
+  game->board[61].piece.color = BLACK;
+  game->board[61].piece.type= BISHOP;
+  game->board[61].piece.value = BISHOP_VALUE;
+  game->board[61].empty = false;
 }
 
-// turn: black -> 0, white -> 1
 void print_game(struct game game, int turn){
-  if(turn)
+  if(turn == WHITE)
     for(int j = 7; j >= 0; j--){
       for(int i = 0; i < 8; i++){
         int index = j*8 + i;
-        printf(" %c%d ", game.board[index].piece.color ? 'W' : 'B', game.board[index].piece.value);
+        if(game.board[index].empty)
+          printf(" .. ");
+        else
+          printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
       }
       printf("\n");
     }
@@ -156,15 +137,169 @@ void print_game(struct game game, int turn){
     for(int j = 0; j < 8; j++){
       for(int i = 0; i < 8; i++){
         int index = j*8 + i;
-        printf(" %c%d ", game.board[index].piece.color ? 'W' : 'B', game.board[index].piece.value);
+        if(game.board[index].empty)
+          printf(" .. ");
+        else
+          printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
       }
       printf("\n");
     }
 }
 
-int main(){
-  struct game game;
-  init_game(&game, 5);
-  print_game(game, 1);
-  return 0;
+int bishop_move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
+  int i_diff = end_position.i - start_position.i; 
+  int j_diff = end_position.j - start_position.j;
+  if(i_diff == j_diff || i_diff == j_diff * -1){
+    bool possible = true;
+    if(i_diff > 0 && j_diff > 0)
+      for(int k = 1; k < i_diff; k++)
+        if(!game->board[(start_position.j + k)*8 + start_position.i + k].empty)
+          possible = false;
+    if(i_diff > 0 && j_diff < 0)
+      for(int k = 1; k < i_diff; k++)
+        if(!game->board[(start_position.j - k)*8 + start_position.i + k].empty)
+          possible = false;
+    if(i_diff < 0 && j_diff > 0)
+      for(int k = 1; k < i_diff; k++)
+        if(!game->board[(start_position.j + k)*8 + start_position.i - k].empty)
+          possible = false;
+    if(i_diff < 0 && j_diff < 0)
+      for(int k = 1; k < i_diff; k++)
+        if(!game->board[(start_position.j - k)*8 + start_position.i - k].empty)
+          possible = false;
+    if(possible)
+      return 0;
+  }
+}
+int rock_move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
+  if(start_position.i == end_position.i || start_position.j == end_position.j){
+    bool possible = true;
+    if(start_position.i == end_position.i){
+      for (int k = start_position.j + 1; k < end_position.j; k++) {
+        if(!game->board[k*8 + start_position.i].empty)
+          possible = false;
+      }
+      for (int k = start_position.j + 1; k > end_position.j; k--) {
+        if(!game->board[k*8 + start_position.i].empty)
+          possible = false;
+      }
+    }
+    if(start_position.j == end_position.j){
+      for (int k = start_position.i + 1; k < end_position.i; k++) {
+        if(!game->board[start_position.j*8 + k].empty)
+          possible = false;
+      }
+      for (int k = start_position.i + 1; k > end_position.i; k--) {
+        if(!game->board[start_position.j*8 + k].empty)
+          possible = false;
+      }
+      if(possible)
+        return 0;
+    }
+  }
+}
+int move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
+  // check obv illegal moves
+  if(start_position.i == end_position.i && start_position.j == end_position.j)
+    return 1;
+  int start_index = start_position.j * 8 + start_position.i;
+  int end_index = end_position.j * 8 + end_position.i;
+  if(game->board[start_index].empty)
+    return 1;
+  struct piece piece = game->board[start_index].piece;
+  if(piece.color != turn)
+    return 1;
+  if(game->board[end_index].piece.color == turn)
+    return 1;
+
+  // make move based on piece type
+  if(piece.type == PAWN){
+    if(turn == WHITE){
+      if(start_position.i == end_position.i){
+        if(start_position.j == end_position.j - 1 && 
+          game->board[end_index].empty)
+          return 0;
+        if(start_position.j == end_position.j - 2 && 
+          game->board[end_index].empty && 
+          game->board[(start_position.j + 1)*8 + start_position.i].empty &&
+          start_position.j == 1)
+          return 0;
+      }else if(start_position.j == end_position.j - 1 &&
+          !game->board[end_index].empty &&
+          game->board[end_index].piece.color != turn &&
+          (start_position.i == end_position.i - 1 || start_position.i == end_position.i + 1))
+        return 0;
+    }else{
+      if(start_position.i == end_position.i){
+        if(start_position.j == end_position.j + 1 && 
+          game->board[end_index].empty)
+          return 0;
+        if(start_position.j == end_position.j + 2 && 
+          game->board[end_index].empty && 
+          game->board[(start_position.j - 1)*8 + start_position.i].empty &&
+          start_position.j == 6)
+          return 0;
+      }else if(start_position.j == end_position.j + 1 &&
+          !game->board[end_index].empty &&
+          game->board[end_index].piece.color != turn &&
+          (start_position.i == end_position.i - 1 || start_position.i == end_position.i + 1))
+        return 0;
+    }
+  }else if(piece.type == ROCK){
+    return rock_move_possible(game, turn, start_position, end_position);
+  }else if(piece.type == BISHOP){
+    return bishop_move_possible(game, turn, start_position, end_position);
+  }else if(piece.type == KNIGHT){
+    return 0;
+  }else if(piece.type == QUEEN){
+    int bp = bishop_move_possible(game, turn, start_position, end_position);
+    int rp = rock_move_possible(game, turn, start_position, end_position);
+    return bp & rp;
+  }else if(piece.type == KING){
+    int i_diff = end_position.i - start_position.i; 
+    int j_diff = end_position.j - start_position.j;
+    if(i_diff >= -1 && i_diff <= 1 && j_diff >= -1 && j_diff <= 1)
+      return 0;
+  }
+  return 1;
+}
+
+bool ckeck_is_white_in_check(struct game *game){
+  bool check = false;
+  int king_pos;
+  for(int i = 0; i < 64; i++)
+    if(game->board[i].piece.type == KING && game->board[i].piece.color == WHITE)
+      king_pos = i;
+  for(int i = 0; i < 64; i++)
+    if(move_possible(game, BLACK, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0)
+      check = true;
+  if(check)
+    return true;
+  return false;
+}
+bool ckeck_is_black_in_check(struct game *game){
+  bool check = false;
+  int king_pos;
+  for(int i = 0; i < 64; i++)
+    if(game->board[i].piece.type == KING && game->board[i].piece.color == BLACK)
+      king_pos = i;
+  for(int i = 0; i < 64; i++)
+    if(move_possible(game, WHITE, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0)
+      check = true;
+  if(check)
+    return true;
+  return false;
+}
+
+int make_move(struct game *game, int turn, struct position start_position, struct position end_position){
+  if(move_possible(game, turn, start_position, end_position) == 0){
+    int start_index = start_position.j * 8 + start_position.i;
+    int end_index = end_position.j * 8 + end_position.i;
+    game->board[end_index].empty = false;
+    game->board[end_index].piece = game->board[start_index].piece;
+    game->board[start_index].empty = true;
+    game->board[start_index].piece.type = NON;
+    return 0;
+  }
+  return 1;
 }
