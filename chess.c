@@ -1,6 +1,6 @@
 #include "chess.h"
-#include <stdbool.h>
 #include <stdio.h>
+#include <wchar.h>
 
 void init_game(struct game *game, int time){
   // setting game status
@@ -129,8 +129,54 @@ void print_game(struct game game, int turn){
         int index = j*8 + i;
         if(game.board[index].empty)
           printf(" .. ");
-        else
-          printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
+        else{
+          struct piece piece = game.board[index].piece;
+          printf(" ");
+          if(piece.color == BLACK)
+            switch (piece.type) {
+            case PAWN:
+              printf("\U00002659");
+              break;
+            case KNIGHT:
+              printf("\U00002658");
+              break;
+            case BISHOP:
+              printf("\U00002657");
+              break;
+            case ROCK:
+              printf("\U00002656");
+              break;
+            case QUEEN:
+              printf("\U00002655");
+              break;
+            case KING:
+              printf("\U00002654");
+              break;
+            }
+          else
+            switch (piece.type) {
+            case PAWN:
+              printf("\U0000265F");
+              break;
+            case KNIGHT:
+              printf("\U0000265E");
+              break;
+            case BISHOP:
+              printf("\U0000265D");
+              break;
+            case ROCK:
+              printf("\U0000265C");
+              break;
+            case QUEEN:
+              printf("\U0000265B");
+              break;
+            case KING:
+              printf("\U0000265A");
+              break;
+            }
+          printf("  ");
+        }
+          // printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
       }
       printf("\n");
     }
@@ -144,8 +190,53 @@ void print_game(struct game game, int turn){
         int index = j*8 + i;
         if(game.board[index].empty)
           printf(" .. ");
-        else
-          printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
+        else{
+          struct piece piece = game.board[index].piece;
+          printf(" ");
+          if(piece.color == BLACK)
+            switch (piece.type) {
+            case PAWN:
+              printf("\U00002659");
+              break;
+            case KNIGHT:
+              printf("\U00002658");
+              break;
+            case BISHOP:
+              printf("\U00002657");
+              break;
+            case ROCK:
+              printf("\U00002656");
+              break;
+            case QUEEN:
+              printf("\U00002655");
+              break;
+            case KING:
+              printf("\U00002654");
+              break;
+            }
+          else
+            switch (piece.type) {
+            case PAWN:
+              printf("\U0000265F");
+              break;
+            case KNIGHT:
+              printf("\U0000265E");
+              break;
+            case BISHOP:
+              printf("\U0000265D");
+              break;
+            case ROCK:
+              printf("\U0000265C");
+              break;
+            case QUEEN:
+              printf("\U0000265B");
+              break;
+            case KING:
+              printf("\U0000265A");
+              break;
+            }
+          printf("  ");
+        }
       }
       printf("\n");
     }
