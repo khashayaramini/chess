@@ -133,7 +133,7 @@ void print_game(struct game game, int turn){
           struct piece piece = game.board[index].piece;
           printf(" ");
           if(piece.color == BLACK)
-            switch (piece.type) {
+          switch (piece.type) {
             case PAWN:
               printf("\U00002659");
               break;
@@ -152,9 +152,9 @@ void print_game(struct game game, int turn){
             case KING:
               printf("\U00002654");
               break;
-            }
-          else
-            switch (piece.type) {
+          }
+        else
+          switch (piece.type) {
             case PAWN:
               printf("\U0000265F");
               break;
@@ -173,10 +173,10 @@ void print_game(struct game game, int turn){
             case KING:
               printf("\U0000265A");
               break;
-            }
+          }
           printf("  ");
         }
-          // printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
+        // printf(" %c%d ", game.board[index].piece.color == WHITE ? 'W' : 'B', game.board[index].piece.type);
       }
       printf("\n");
     }
@@ -195,45 +195,45 @@ void print_game(struct game game, int turn){
           printf(" ");
           if(piece.color == BLACK)
             switch (piece.type) {
-            case PAWN:
-              printf("\U00002659");
-              break;
-            case KNIGHT:
-              printf("\U00002658");
-              break;
-            case BISHOP:
-              printf("\U00002657");
-              break;
-            case ROCK:
-              printf("\U00002656");
-              break;
-            case QUEEN:
-              printf("\U00002655");
-              break;
-            case KING:
-              printf("\U00002654");
-              break;
+              case PAWN:
+                printf("\U00002659");
+                break;
+              case KNIGHT:
+                printf("\U00002658");
+                break;
+              case BISHOP:
+                printf("\U00002657");
+                break;
+              case ROCK:
+                printf("\U00002656");
+                break;
+              case QUEEN:
+                printf("\U00002655");
+                break;
+              case KING:
+                printf("\U00002654");
+                break;
             }
           else
             switch (piece.type) {
-            case PAWN:
-              printf("\U0000265F");
-              break;
-            case KNIGHT:
-              printf("\U0000265E");
-              break;
-            case BISHOP:
-              printf("\U0000265D");
-              break;
-            case ROCK:
-              printf("\U0000265C");
-              break;
-            case QUEEN:
-              printf("\U0000265B");
-              break;
-            case KING:
-              printf("\U0000265A");
-              break;
+              case PAWN:
+                printf("\U0000265F");
+                break;
+              case KNIGHT:
+                printf("\U0000265E");
+                break;
+              case BISHOP:
+                printf("\U0000265D");
+                break;
+              case ROCK:
+                printf("\U0000265C");
+                break;
+              case QUEEN:
+                printf("\U0000265B");
+                break;
+              case KING:
+                printf("\U0000265A");
+                break;
             }
           printf("  ");
         }
@@ -353,10 +353,9 @@ int move_possible(struct game *game, int turn, struct position start_position, s
     int i_diff = end_position.i - start_position.i; 
     int j_diff = end_position.j - start_position.j;
     if(i_diff == 1 || i_diff == -1 || i_diff == 2 || i_diff == -2)
-      if(j_diff == 1 || j_diff == -1 || j_diff == 2 || j_diff == -2)
-        if(i_diff != j_diff && i_diff != j_diff * 1)
-          return 0;
-    return 1;
+    if(j_diff == 1 || j_diff == -1 || j_diff == 2 || j_diff == -2)
+    if(i_diff != j_diff && i_diff != j_diff * 1)
+      return 0;
   }else if(piece.type == QUEEN){
     int bp = bishop_move_possible(game, turn, start_position, end_position);
     int rp = rock_move_possible(game, turn, start_position, end_position);
@@ -377,11 +376,11 @@ bool ckeck_is_white_in_check(struct game *game){
     if(game->board[i].piece.type == KING && game->board[i].piece.color == WHITE)
       king_pos = i;
   for(int i = 0; i < 64; i++)
-    if(move_possible(game, BLACK, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0)
+    if(game->board->piece.color == BLACK
+      && move_possible(game, BLACK, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0){
       check = true;
-  if(check)
-    return true;
-  return false;
+    }
+  return check;
 }
 bool ckeck_is_black_in_check(struct game *game){
   bool check = false;
@@ -390,26 +389,37 @@ bool ckeck_is_black_in_check(struct game *game){
     if(game->board[i].piece.type == KING && game->board[i].piece.color == BLACK)
       king_pos = i;
   for(int i = 0; i < 64; i++)
-    if(move_possible(game, WHITE, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0)
+    if(game->board->piece.color == WHITE
+      && move_possible(game, WHITE, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0){
       check = true;
-  if(check)
-    return true;
-  return false;
+    }
+  return check;
 }
 
 int make_move(struct game *game, int turn, struct position start_position, struct position end_position){
   if(move_possible(game, game->move, start_position, end_position) == 0){
+    struct game back_game = *game;
     int start_index = start_position.j * 8 + start_position.i;
     int end_index = end_position.j * 8 + end_position.i;
     game->board[end_index].empty = false;
     game->board[end_index].piece = game->board[start_index].piece;
     game->board[start_index].empty = true;
     game->board[start_index].piece.type = NON;
-    if(game->move == WHITE)
-      game->move = BLACK;
-    else
-     game->move = WHITE;
-    return 0;
+    game->board[start_index].piece.value = NON;
+    game->board[start_index].piece.color = NON;
+    if(game->move == WHITE){
+      if(!ckeck_is_white_in_check(game)){
+        game->move = BLACK;
+        return 0;
+      }
+    }else{
+      if(!ckeck_is_black_in_check(game)){
+        game->move = WHITE;
+        return 0;
+      }
+    }
+    *game = back_game;
+    return 1;
   }
   return 1;
 }
