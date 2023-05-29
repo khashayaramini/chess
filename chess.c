@@ -4,121 +4,121 @@
 
 void init_game(struct game *game, int time){
     // setting game status
-    game->black_time = time;
-    game->white_time = time;
-    game->black_score = 0;
-    game->white_score = 0;
-    game->move = WHITE;
-    game->is_black_check = false;
-    game->is_white_check = false;
+    game->black_time        = time;
+    game->white_time        = time;
+    game->black_score       = 0;
+    game->white_score       = 0;
+    game->move              = WHITE;
+    game->is_black_check    = false;
+    game->is_white_check    = false;
 
     // setting square index
     for(int i = 0; i < 64; i++){
-        game->board[i].i = i % 8;
-        game->board[i].j = i / 8;
-        game->board[i].empty = true;
-        game->board[i].piece.color = NON;
-        game->board[i].piece.type= NON;
-        game->board[i].piece.value = NON;
+        game->board[i].i            = i % 8;
+        game->board[i].j            = i / 8;
+        game->board[i].empty        = true;
+        game->board[i].piece.color  = NON;
+        game->board[i].piece.type   = NON;
+        game->board[i].piece.value  = NON;
     }
 
     // putting pieces in place
     for(int i = 0; i < 8; i++){
         // setting white pawns
-        game->board[i+8].piece.color = WHITE;
-        game->board[i+8].piece.type= PAWN;
-        game->board[i+8].piece.value = PAWN_VALUE;
-        game->board[i+8].empty = false;
+        game->board[i+8].piece.color    = WHITE;
+        game->board[i+8].piece.type     = PAWN;
+        game->board[i+8].piece.value    = PAWN_VALUE;
+        game->board[i+8].empty          = false;
         // setting black pawns
-        game->board[i+48].piece.color = BLACK;
-        game->board[i+48].piece.type= PAWN;
-        game->board[i+48].piece.value = PAWN_VALUE;
-        game->board[i+48].empty = false;
+        game->board[i+48].piece.color   = BLACK;
+        game->board[i+48].piece.type    = PAWN;
+        game->board[i+48].piece.value   = PAWN_VALUE;
+        game->board[i+48].empty         = false;
     }
 
     // setting white queen
-    game->board[3].piece.color = WHITE;
-    game->board[3].piece.type= QUEEN;
-    game->board[3].piece.value = QUEEN_VALUE;
-    game->board[3].empty = false;
+    game->board[3].piece.color      = WHITE;
+    game->board[3].piece.type       = QUEEN;
+    game->board[3].piece.value      = QUEEN_VALUE;
+    game->board[3].empty            = false;
 
     // setting white king
-    game->board[4].piece.color = WHITE;
-    game->board[4].piece.type= KING;
-    game->board[4].piece.value = KING_VALUE;
-    game->board[4].empty = false;
+    game->board[4].piece.color      = WHITE;
+    game->board[4].piece.type       = KING;
+    game->board[4].piece.value      = KING_VALUE;
+    game->board[4].empty            = false;
 
     // setting black queen
-    game->board[59].piece.color = BLACK;
-    game->board[59].piece.type= QUEEN;
-    game->board[59].piece.value = QUEEN_VALUE;
-    game->board[59].empty = false;
+    game->board[59].piece.color     = BLACK;
+    game->board[59].piece.type      = QUEEN;
+    game->board[59].piece.value     = QUEEN_VALUE;
+    game->board[59].empty           = false;
 
     // setting black king
-    game->board[60].piece.color = BLACK;
-    game->board[60].piece.type= KING;
-    game->board[60].piece.value = KING_VALUE;
-    game->board[60].empty = false;
+    game->board[60].piece.color     = BLACK;
+    game->board[60].piece.type      = KING;
+    game->board[60].piece.value     = KING_VALUE;
+    game->board[60].empty           = false;
 
     //setting white rocks
-    game->board[0].piece.color = WHITE;
-    game->board[0].piece.type= ROCK;
-    game->board[0].piece.value = ROCK_VALUE;
-    game->board[0].empty = false;
-    game->board[7].piece.color = WHITE;
-    game->board[7].piece.type= ROCK;
-    game->board[7].piece.value = ROCK_VALUE;
-    game->board[7].empty = false;
+    game->board[0].piece.color  = WHITE;
+    game->board[0].piece.type   = ROCK;
+    game->board[0].piece.value  = ROCK_VALUE;
+    game->board[0].empty        = false;
+    game->board[7].piece.color  = WHITE;
+    game->board[7].piece.type   = ROCK;
+    game->board[7].piece.value  = ROCK_VALUE;
+    game->board[7].empty        = false;
 
     //setting black rocks
     game->board[56].piece.color = BLACK;
-    game->board[56].piece.type= ROCK;
+    game->board[56].piece.type  = ROCK;
     game->board[56].piece.value = ROCK_VALUE;
-    game->board[56].empty = false;
+    game->board[56].empty       = false;
     game->board[63].piece.color = BLACK;
-    game->board[63].piece.type= ROCK;
+    game->board[63].piece.type  = ROCK;
     game->board[63].piece.value = ROCK_VALUE;
-    game->board[63].empty = false;
+    game->board[63].empty       = false;
 
     //setting white knights
-    game->board[1].piece.color = WHITE;
-    game->board[1].piece.type= KNIGHT;
-    game->board[1].piece.value = KNIGHT_VALUE;
-    game->board[1].empty = false;
-    game->board[6].piece.color = WHITE;
-    game->board[6].piece.type= KNIGHT;
-    game->board[6].piece.value = KNIGHT_VALUE;
-    game->board[6].empty = false;
+    game->board[1].piece.color  = WHITE;
+    game->board[1].piece.type   = KNIGHT;
+    game->board[1].piece.value  = KNIGHT_VALUE;
+    game->board[1].empty        = false;
+    game->board[6].piece.color  = WHITE;
+    game->board[6].piece.type   = KNIGHT;
+    game->board[6].piece.value  = KNIGHT_VALUE;
+    game->board[6].empty        = false;
 
     //setting black knights
     game->board[57].piece.color = BLACK;
-    game->board[57].piece.type= KNIGHT;
+    game->board[57].piece.type  = KNIGHT;
     game->board[57].piece.value = KNIGHT_VALUE;
-    game->board[57].empty = false;
+    game->board[57].empty       = false;
     game->board[62].piece.color = BLACK;
-    game->board[62].piece.type= KNIGHT;
+    game->board[62].piece.type  = KNIGHT;
     game->board[62].piece.value = KNIGHT_VALUE;
-    game->board[62].empty = false;
+    game->board[62].empty       = false;
 
     //setting white bishops
-    game->board[2].piece.color = WHITE;
-    game->board[2].piece.type= BISHOP;
-    game->board[2].piece.value = BISHOP_VALUE;
-    game->board[2].empty = false;
-    game->board[5].piece.color = WHITE;
-    game->board[5].piece.type= BISHOP;
-    game->board[5].piece.value = BISHOP_VALUE;
-    game->board[5].empty = false;
+    game->board[2].piece.color  = WHITE;
+    game->board[2].piece.type   = BISHOP;
+    game->board[2].piece.value  = BISHOP_VALUE;
+    game->board[2].empty        = false;
+    game->board[5].piece.color  = WHITE;
+    game->board[5].piece.type   = BISHOP;
+    game->board[5].piece.value  = BISHOP_VALUE;
+    game->board[5].empty        = false;
 
     //setting black bishops
     game->board[58].piece.color = BLACK;
-    game->board[58].piece.type= BISHOP;
+    game->board[58].piece.type  = BISHOP;
     game->board[58].piece.value = BISHOP_VALUE;
-    game->board[58].empty = false;
+    game->board[58].empty       = false;
     game->board[61].piece.color = BLACK;
-    game->board[61].piece.type= BISHOP;
+    game->board[61].piece.type  = BISHOP;
     game->board[61].piece.value = BISHOP_VALUE;
-    game->board[61].empty = false;
+    game->board[61].empty       = false;
 }
 
 void print_game(struct game game, int turn){
@@ -401,12 +401,12 @@ int make_move(struct game *game, int turn, struct position start_position, struc
         struct game back_game = *game;
         int start_index = start_position.j * 8 + start_position.i;
         int end_index = end_position.j * 8 + end_position.i;
-        game->board[end_index].empty = false;
-        game->board[end_index].piece = game->board[start_index].piece;
-        game->board[start_index].empty = true;
-        game->board[start_index].piece.type = NON;
-        game->board[start_index].piece.value = NON;
-        game->board[start_index].piece.color = NON;
+        game->board[end_index].empty            = false;
+        game->board[end_index].piece            = game->board[start_index].piece;
+        game->board[start_index].empty          = true;
+        game->board[start_index].piece.type     = NON;
+        game->board[start_index].piece.value    = NON;
+        game->board[start_index].piece.color    = NON;
         if(game->move == WHITE){
             if(!ckeck_is_white_in_check(game)){
                 game->move = BLACK;
