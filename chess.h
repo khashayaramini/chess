@@ -36,16 +36,16 @@
  * queen -> 5
  * */
 struct piece{
-    int value;
-    int type;
-    int color;
+    int     value;
+    int     type;
+    int     color;
 };
 
 struct square{
-    int i;
-    int j;
-    struct piece piece;
-    bool empty;
+    int             i;
+    int             j;
+    struct piece    piece;
+    bool            empty;
 };
 
 /*
@@ -54,14 +54,14 @@ struct square{
  * index increase ny going right in each row then going to the upper row
  * */
 struct game{
-    struct square board[64];
-    int white_score;
-    int black_score;
-    int move;
-    bool is_white_check;
-    bool is_black_check;
-    int white_time;
-    int black_time;
+    struct square   board[64];
+    int             white_score;
+    int             black_score;
+    int             move;
+    bool            is_white_check;
+    bool            is_black_check;
+    int             white_time;
+    int             black_time;
 };
 
 struct position{
