@@ -183,6 +183,7 @@ void print_game(struct game game, int turn){
         printf("  ");
         for(int i = 0; i < 8; i++)
             printf("  %c ", i+65);
+        printf("\n");
     }else{
         for(int j = 0; j < 8; j++){
             printf("%d| ", j+1);
@@ -243,6 +244,7 @@ void print_game(struct game game, int turn){
         printf("  ");
         for(int i = 7; i >= 0; i--)
             printf("  %c ", i+65);
+        printf("\n");
     }
 }
 
@@ -270,33 +272,39 @@ int bishop_move_possible(struct game *game, int turn, struct position start_posi
         if(possible)
             return 0;
     }
+    return 1;
 }
 int rock_move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
     if(start_position.i == end_position.i || start_position.j == end_position.j){
         bool possible = true;
         if(start_position.i == end_position.i){
-            for (int k = start_position.j + 1; k < end_position.j; k++) {
-                if(!game->board[k*8 + start_position.i].empty)
-                    possible = false;
-            }
-            for (int k = start_position.j + 1; k > end_position.j; k--) {
-                if(!game->board[k*8 + start_position.i].empty)
-                    possible = false;
-            }
+            if(start_position.j < end_position.j)
+                for (int k = start_position.j + 1; k < end_position.j; k++) {
+                    if(!game->board[k*8 + start_position.i].empty)
+                        possible = false;
+                }
+            else
+                for (int k = start_position.j - 1; k > end_position.j; k--) {
+                    if(!game->board[k*8 + start_position.i].empty)
+                        possible = false;
+                }
         }
         if(start_position.j == end_position.j){
-            for (int k = start_position.i + 1; k < end_position.i; k++) {
-                if(!game->board[start_position.j*8 + k].empty)
-                    possible = false;
-            }
-            for (int k = start_position.i + 1; k > end_position.i; k--) {
-                if(!game->board[start_position.j*8 + k].empty)
-                    possible = false;
-            }
-            if(possible)
-                return 0;
+            if(start_position.i < end_position.i)
+                for (int k = start_position.i + 1; k < end_position.i; k++) {
+                    if(!game->board[start_position.j*8 + k].empty)
+                        possible = false;
+                }
+            else
+                for (int k = start_position.i - 1; k > end_position.i; k--) {
+                    if(!game->board[start_position.j*8 + k].empty)
+                        possible = false;
+                }
         }
+        if(possible)
+            return 0;
     }
+    return 1;
 }
 int move_possible(struct game *game, int turn, struct position start_position, struct position end_position){
     // check obv illegal moves
@@ -376,7 +384,7 @@ bool ckeck_is_white_in_check(struct game *game){
         if(game->board[i].piece.type == KING && game->board[i].piece.color == WHITE)
             king_pos = i;
     for(int i = 0; i < 64; i++)
-        if(game->board->piece.color == BLACK
+        if(game->board[i].piece.color == BLACK
             && move_possible(game, BLACK, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0){
             check = true;
         }
@@ -389,7 +397,7 @@ bool ckeck_is_black_in_check(struct game *game){
         if(game->board[i].piece.type == KING && game->board[i].piece.color == BLACK)
             king_pos = i;
     for(int i = 0; i < 64; i++)
-        if(game->board->piece.color == WHITE
+        if(game->board[i].piece.color == WHITE
             && move_possible(game, WHITE, (struct position){.i = i% 8, .j = i / 8}, (struct position){.i = king_pos % 8, .j = king_pos / 8}) == 0){
             check = true;
         }
@@ -419,7 +427,9 @@ int make_move(struct game *game, int turn, struct position start_position, struc
             }
         }
         *game = back_game;
+        printf("king is in check!\n");
         return 1;
     }
+    printf("move not possible\n");
     return 1;
 }
